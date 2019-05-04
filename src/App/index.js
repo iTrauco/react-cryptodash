@@ -1,18 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react'
+// import React, { Component } from 'react';
 import './App.css';
-
 import WelcomeMessage from './WelcomeMessage';
 //#7 @ 03:13
-import styled, { css }from 'styled-components';
+// import styled, { css }from 'styled-components';
+import AppLayout from './AppLayout';
+
+
 
 
 class App extends React.Component {
   render()  {
     return (
-      <div>
+      <AppLayout>
       <WelcomeMessage/>
 
-      </div>
+      </AppLayout>
     );
   }
 }
