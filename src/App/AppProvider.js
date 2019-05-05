@@ -6,12 +6,12 @@ export class AppProvider extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            page: 'dashboard'
+            page: 'settings',
+            setPage: this.setPage
         }
     }
     // #12 @ 02:50
-    setpage = page => this.setState({page})
-
+    setPage = page => this.setState({page})
     // # 12 @ 04:04
     render() {
         return (
