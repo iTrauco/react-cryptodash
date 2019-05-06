@@ -1,4 +1,6 @@
 import React from 'react';
+// #14 @ 00:40
+const cc = require('cryptocompare');
 // #12 @ 03:24
 export const AppContext = React.createContext();
 
@@ -15,6 +17,16 @@ export class AppProvider extends React.Component {
         }
     }
 
+    componentDidMount = () => { // #14 @ 01:30
+        this.fetchCoins();
+    }
+
+    fetchCoins = async () => { // #14 @ 01:30
+        let coinList = (await cc.coinList()).Data;
+        this.setState({coinList});
+        // console.log(coinList)
+    }
+
     confirmFavorites = () => {
         this.setState ({
             firstVisit: false,
@@ -26,7 +38,6 @@ export class AppProvider extends React.Component {
             test: 'hello'
         }));
     }
-
 
     // # 13 @ 03:10
     savedSettings() {
