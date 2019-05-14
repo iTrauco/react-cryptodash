@@ -6,6 +6,8 @@ import CoinImage from '../Shared/CoinImage';
 
 const SpotlightName = styled.h2 `
 text-align: center;
+margin: auto;
+display: block;
 `
 
 export default function () {
