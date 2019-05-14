@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-
 // #14 @ 00:40
 const cc = require('cryptocompare');
 // #12 @ 03:24
@@ -74,11 +73,14 @@ export class AppProvider extends React.Component {
     }
 
     isInFavorites = key => _.includes(this.state.favorites, key)
+//    
 //=================================================================================
     confirmFavorites = () => {
+        let favorites = this.state.favorites[0];
         this.setState ({
             firstVisit: false,
-            page: 'dashboard'
+            page: 'dashboard',
+            currentFavorite,
         }, () => { // #27 00:58 
             this.fetchPrices(); // #27 00:58 
         });
@@ -86,7 +88,8 @@ export class AppProvider extends React.Component {
         // console.log('Hello, it\'s me...')
         // #13 @ 08:36
         localStorage.setItem('cryptodash', JSON.stringify({
-            favorites: this.state.favorites
+            favorites: this.state.favorites,
+            currentFavorite
         }));
     }
 
@@ -96,8 +99,8 @@ export class AppProvider extends React.Component {
         if(!cryptoDashData) {
             return {page: 'settings', firstVisit: true}
         }
-        let {favorites} = cryptoDashData;
-        return {favorites};
+        let {favorites, currentFavorite} = cryptoDashData;
+        return {favorites, currentFavorite};
     }
 
     // #12 @ 02:50
