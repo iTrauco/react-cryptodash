@@ -1,11 +1,14 @@
 import React from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 // #14 @ 00:40
 const cc = require('cryptocompare');
 // #12 @ 03:24
 export const AppContext = React.createContext();
 
 const MAX_FAVORITES = 10;
+
+const TIME_UNITS = 10;
 
 // default state
 export class AppProvider extends React.Component {
@@ -29,6 +32,7 @@ export class AppProvider extends React.Component {
     componentDidMount = () => { // #14 @ 01:30
         this.fetchCoins();
         this.fetchPrices();
+        this.fetchHistorical();
     }
 
     fetchCoins = async () => { // #14 @ 01:30
@@ -36,15 +40,36 @@ export class AppProvider extends React.Component {
         this.setState({coinList});
         // console.log(coinList)
     }
-
-//=================================================================================
-// #27 // #27 01:12
+    //
+////===============================================================================
+    // #27 // #27 01:12
     fetchPrices = async () => {
         if(this.state.firstVisit) return;
         let prices = await this.prices();
         console.log(prices);
         this.setState({prices});
     }
+    //
+////===============================================================================
+    // #33 @ 02:30
+    fetchHistorical = async () => {
+        if (this.state.firstVisit) return;
+
+        const results = await this.historical();
+        // console.log('results', results);
+        const historical = [
+            {
+                name: this.state.currentFavorite,
+                data: results.map((ticker, index) => [
+                    moment().subtract({months: TIME_UNITS - index}).valueOf(),
+                        ticker.USD // y axis value
+                ])
+            }
+        ]
+        this.setState({historical});
+    }
+    //
+////===============================================================================
     // #27 @ 02:00
     prices = async () => {
         let returnData = [];
@@ -58,8 +83,31 @@ export class AppProvider extends React.Component {
         }
         return returnData;
     }
-//=================================================================================
+    //
+//////===============================================================================
+    // #33 @ 06:47
+    historical = () => {
+        let promises = [];
+        for (let units = TIME_UNITS; units > 0; units--) {
+            promises.push(
+                cc.priceHistorical(
+                    this.state.currentFavorite,
+                    ['USD'],
+                    moment()
+                    .subtract({months: units})
+                    .toDate()
+                )
+            )
+        }
+        return Promise.all(promises);
+    }
 
+
+
+
+    //
+//////===============================================================================
+    //
     addCoin = key => {
         let favorites = [...this.state.favorites];
         if(favorites.length < MAX_FAVORITES){
@@ -82,8 +130,11 @@ export class AppProvider extends React.Component {
             firstVisit: false,
             page: 'dashboard',
             currentFavorite,
+            prices: null,
+            historical: null
         }, () => { // #27 00:58 
             this.fetchPrices(); // #27 00:58 
+            this.fetchHistorical();
         });
 
         // console.log('Hello, it\'s me...')
@@ -97,8 +148,10 @@ export class AppProvider extends React.Component {
     // #29 @ 06:26
     setCurrentFavorite = (sym) => {
         this.setState({
-            currentFavorite: sym
-        });
+            currentFavorite: sym,
+            historical: null
+        }, this.fetchHistorical);
+
         localStorage.setItem('cryptoDash', JSON.stringify({
             ...JSON.parse(localStorage.getItem('cryptoDash')),
             currentFavorite: sym
