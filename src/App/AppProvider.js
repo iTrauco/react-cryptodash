@@ -55,7 +55,19 @@ export class AppProvider extends React.Component {
     fetchHistorical = async () => {
         if(this.state.firstVisit) return;
         let results = await this.fetchHistorical();
-        console.log('results', results);
+        // console.log('results', results);
+        let historical = [
+            {
+                name: this.state.currentFavorite,
+                data: results.map((ticker, index) => [
+                    moment()
+                    .subtract({months: TIME_UNITS - index})
+                    .valueOf(),
+                        ticker.USD // y axis value
+                ])
+            }
+        ]
+        this.setState({historical});
     }
     //
 ////===============================================================================
@@ -74,7 +86,7 @@ export class AppProvider extends React.Component {
     }
     //
 //////===============================================================================
-    //
+    // #33 @ 06:47
     historical = () => {
         let promises = [];
         for (let units = TIME_UNITS; units > 0; units--) {
