@@ -1,11 +1,14 @@
 import React from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 // #14 @ 00:40
 const cc = require('cryptocompare');
 // #12 @ 03:24
 export const AppContext = React.createContext();
 
 const MAX_FAVORITES = 10;
+
+const TIME_UNITS = 10;
 
 // default state
 export class AppProvider extends React.Component {
@@ -29,6 +32,7 @@ export class AppProvider extends React.Component {
     componentDidMount = () => { // #14 @ 01:30
         this.fetchCoins();
         this.fetchPrices();
+        this.fetchHistorical();
     }
 
     fetchCoins = async () => { // #14 @ 01:30
@@ -36,15 +40,25 @@ export class AppProvider extends React.Component {
         this.setState({coinList});
         // console.log(coinList)
     }
-
-//=================================================================================
-// #27 // #27 01:12
+    //
+////===============================================================================
+    // #27 // #27 01:12
     fetchPrices = async () => {
         if(this.state.firstVisit) return;
         let prices = await this.prices();
         console.log(prices);
         this.setState({prices});
     }
+    //
+////===============================================================================
+    // #33 @ 02:30
+    fetchHistorical = async () => {
+        if(this.state.firstVisit) return;
+        let results = await this.fetchHistorical();
+        console.log('results', results);
+    }
+    //
+////===============================================================================
     // #27 @ 02:00
     prices = async () => {
         let returnData = [];
@@ -58,8 +72,31 @@ export class AppProvider extends React.Component {
         }
         return returnData;
     }
-//=================================================================================
+    //
+//////===============================================================================
+    //
+    historical = () => {
+        let promises = [];
+        for (let units = TIME_UNITS; units > 0; units--) {
+            promises.push(
+                cc.priceHistorical(
+                    this.state.currentFavorite,
+                    ['USD'],
+                    moment()
+                    .subtract({months: units})
+                    .toDate()
+                )
+            )
+        }
+        return Promise.all(promises);
+    }
 
+
+
+
+    //
+//////===============================================================================
+    //
     addCoin = key => {
         let favorites = [...this.state.favorites];
         if(favorites.length < MAX_FAVORITES){
