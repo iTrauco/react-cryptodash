@@ -4,9 +4,12 @@ export default function(historical) {
                 text: 'Lifetime Trading Values'
             },
             yAxis: {
-            title: {
-                text: 'Coin Price'
-            }
+                title: {
+                    text: 'Price'
+                }
+            },
+            xAxis: {
+                type: 'datetime'
             },
             legend: {
             layout: 'vertical',
@@ -24,11 +27,6 @@ export default function(historical) {
             },
             
             series: historical,
-            // series: [{
-            // name: 'Installation',
-            // data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
-            // }, 
-            // ],
         
             responsive: {
             rules: [{

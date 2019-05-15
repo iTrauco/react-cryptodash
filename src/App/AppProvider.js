@@ -60,9 +60,7 @@ export class AppProvider extends React.Component {
             {
                 name: this.state.currentFavorite,
                 data: results.map((ticker, index) => [
-                    moment()
-                    .subtract({months: TIME_UNITS - index})
-                    .valueOf(),
+                    moment().subtract({months: TIME_UNITS - index}).valueOf(),
                         ticker.USD // y axis value
                 ])
             }
@@ -131,8 +129,11 @@ export class AppProvider extends React.Component {
             firstVisit: false,
             page: 'dashboard',
             currentFavorite,
+            prices: null,
+            historical: null
         }, () => { // #27 00:58 
             this.fetchPrices(); // #27 00:58 
+            this.fetchHistorical();
         });
 
         // console.log('Hello, it\'s me...')
@@ -146,8 +147,10 @@ export class AppProvider extends React.Component {
     // #29 @ 06:26
     setCurrentFavorite = (sym) => {
         this.setState({
-            currentFavorite: sym
-        });
+            currentFavorite: sym,
+            historical: null
+        }, this.fetchHistorical);
+
         localStorage.setItem('cryptoDash', JSON.stringify({
             ...JSON.parse(localStorage.getItem('cryptoDash')),
             currentFavorite: sym
