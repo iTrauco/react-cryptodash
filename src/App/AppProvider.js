@@ -53,10 +53,11 @@ export class AppProvider extends React.Component {
 ////===============================================================================
     // #33 @ 02:30
     fetchHistorical = async () => {
-        if(this.state.firstVisit) return;
-        let results = await this.fetchHistorical();
+        if (this.state.firstVisit) return;
+
+        const results = await this.historical();
         // console.log('results', results);
-        let historical = [
+        const historical = [
             {
                 name: this.state.currentFavorite,
                 data: results.map((ticker, index) => [
