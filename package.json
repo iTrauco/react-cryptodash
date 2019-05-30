@@ -1,5 +1,6 @@
 {
   "name": "cryptodash",
+  "homepage":"https://itrauco.github.io/react-cryptocurrency-dashboard",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
